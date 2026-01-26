@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Supabase credentials
+.env
+
+# Claude Code temp directories
+tmpclaude-*/
