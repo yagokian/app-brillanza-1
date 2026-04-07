@@ -111,8 +111,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
 ## Perfis de Usuario
 
 ### Admin
-- Email: yagokian2@gmail.com
-- Senha: kian2025
+- Email: (ver .env ou gerenciador de senhas)
 - Acesso: Total (CRUD clientes, trabalhadoras, servicos, relatorios)
 
 ### Worker (Trabalhadora)

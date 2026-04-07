@@ -185,47 +185,45 @@ export default function NovaTrabalhadoraScreen() {
     try {
       const password = generatePassword();
 
-      const { data, error } = await supabase.auth.admin.createUser({
+      // Salvar sessão atual do admin antes de criar novo usuário
+      const { data: currentSession } = await supabase.auth.getSession();
+      const adminSession = currentSession?.session;
+
+      // Usar signUp para criar o usuário (admin.createUser requer service_role key no backend)
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: watchedEmail,
         password: password,
-        email_confirm: true,
-        user_metadata: {
-          nome: watchedNome,
-          tipo: 'worker',
-          primeiro_acesso: true,
+        options: {
+          data: {
+            nome: watchedNome,
+            tipo: 'worker',
+            primeiro_acesso: true,
+          },
         },
       });
 
-      if (error) {
-        // Tenta método alternativo se admin API não funcionar
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: watchedEmail,
-          password: password,
-          options: {
-            data: {
-              nome: watchedNome,
-              tipo: 'worker',
-              primeiro_acesso: true,
-            },
-          },
+      if (signUpError) throw signUpError;
+
+      // Restaurar sessão do admin (signUp pode ter trocado a sessão)
+      if (adminSession) {
+        await supabase.auth.setSession({
+          access_token: adminSession.access_token,
+          refresh_token: adminSession.refresh_token,
         });
+      }
 
-        if (signUpError) throw signUpError;
-
-        if (signUpData.user) {
-          setValue('user_id', signUpData.user.id);
-          setGeneratedPassword(password);
-          Alert.alert(
-            'Acesso Criado!',
-            `Senha temporária: ${password}\n\nAnote esta senha para passar à trabalhadora. Ela deverá trocar no primeiro acesso.`
-          );
-        }
-      } else if (data.user) {
-        setValue('user_id', data.user.id);
+      if (signUpData.user) {
+        setValue('user_id', signUpData.user.id);
         setGeneratedPassword(password);
         Alert.alert(
           'Acesso Criado!',
           `Senha temporária: ${password}\n\nAnote esta senha para passar à trabalhadora. Ela deverá trocar no primeiro acesso.`
+        );
+      } else {
+        // Usuário pode já existir ou email precisa de confirmação
+        Alert.alert(
+          'Atenção',
+          'Não foi possível criar o acesso. Verifique se o email já está cadastrado.'
         );
       }
     } catch (error: any) {
