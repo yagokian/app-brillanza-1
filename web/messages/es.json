@@ -11,7 +11,8 @@
     "language": "Idioma",
     "signOut": "Cerrar sesión",
     "menu": "Menú",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "users": "Usuarios y accesos"
   },
   "languages": {
     "es": "Español",
@@ -605,10 +606,10 @@
       "cash": "Caja"
     },
     "users": {
-      "title": "Usuarios de finanzas",
-      "subtitle": "Acceso solo al módulo financiero, con verificación en dos pasos obligatoria.",
+      "title": "Usuarios y accesos",
+      "subtitle": "Administradores y personas de finanzas. Ambos perfiles exigen verificación en dos pasos. Las colaboradoras se dan de alta en Colaboradoras.",
       "list": "Usuarios",
-      "empty": "Aún no hay usuarios de finanzas.",
+      "empty": "Aún no hay usuarios.",
       "new": "Nuevo usuario",
       "name": "Nombre",
       "email": "Correo",
@@ -618,7 +619,18 @@
       "inactive": "Inactivo",
       "resetPassword": "Nueva contraseña",
       "deactivate": "Desactivar",
-      "activate": "Reactivar"
+      "activate": "Reactivar",
+      "role": "Tipo de acceso",
+      "roles": {
+        "admin": "Administrador",
+        "financeiro": "Finanzas"
+      },
+      "roleHints": {
+        "financeiro": "Finanzas: solo el módulo financiero (cuentas, pagos, registros financieros)."
+      },
+      "adminWarningTitle": "Acceso total",
+      "adminWarning": "Confirmo que esta persona tendrá acceso a todo: clientes, colaboradoras, agenda, informes, finanzas, exportar y anonimizar datos, y crear otros administradores.",
+      "you": "Tú"
     },
     "results": {
       "title": "Resultados",

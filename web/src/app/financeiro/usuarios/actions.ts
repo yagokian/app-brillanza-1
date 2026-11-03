@@ -12,16 +12,24 @@ export type UsuarioState =
   | { created: { email: string; password: string } }
   | undefined;
 
-const schema = z.object({
-  nome: requiredText(200),
-  email: z.preprocess((v) => (typeof v === "string" ? v.trim().toLowerCase() : v), z.email().max(254)),
-  idioma: z.enum(["es", "pt"]).catch("es"),
-});
+// Roles managed on this screen. Workers keep their own screen (Colaboradoras).
+const ROLES = ["financeiro", "admin"] as const;
+
+const schema = z
+  .object({
+    nome: requiredText(200),
+    email: z.preprocess((v) => (typeof v === "string" ? v.trim().toLowerCase() : v), z.email().max(254)),
+    idioma: z.enum(["es", "pt"]).catch("es"),
+    tipo: z.enum(ROLES),
+    // Full access is granted only with an explicit confirmation.
+    confirmar_admin: z.string().optional(),
+  })
+  .refine((v) => v.tipo !== "admin" || v.confirmar_admin === "1", { path: ["confirmar_admin"] });
 const idSchema = z.uuid();
 
-// Admin creates the login of a person with the 'financeiro' role. The database trigger creates
-// the profile as 'worker'; only the service client (after requireUser admin) promotes it.
-export async function criarUsuarioFinanceiro(_prev: UsuarioState, formData: FormData): Promise<UsuarioState> {
+// Admin creates the login of a finance user or another admin. The database trigger creates
+// the profile as 'worker'; only the service client (after requireUser admin) sets the role.
+export async function criarUsuario(_prev: UsuarioState, formData: FormData): Promise<UsuarioState> {
   await requireUser({ role: "admin" });
   const values = formValues(formData);
   const parsed = schema.safeParse(Object.fromEntries(formData));
@@ -40,7 +48,7 @@ export async function criarUsuarioFinanceiro(_prev: UsuarioState, formData: Form
 
   const { error: profileError } = await admin
     .from("profiles")
-    .update({ nome: parsed.data.nome, idioma: parsed.data.idioma, tipo: "financeiro", deve_trocar_senha: true })
+    .update({ nome: parsed.data.nome, idioma: parsed.data.idioma, tipo: parsed.data.tipo, deve_trocar_senha: true })
     .eq("id", data.user.id);
   if (profileError) {
     await admin.auth.admin.deleteUser(data.user.id);
@@ -51,15 +59,16 @@ export async function criarUsuarioFinanceiro(_prev: UsuarioState, formData: Form
 }
 
 // Turns access on or off: the profile flag blocks the app, the ban blocks new sign-ins.
+// Nobody switches off their own access (there is always one admin left to undo it).
 export async function setUsuarioAtivo(id: string, ativo: boolean): Promise<{ ok: boolean }> {
-  await requireUser({ role: "admin" });
-  if (!idSchema.safeParse(id).success) return { ok: false };
+  const me = await requireUser({ role: "admin" });
+  if (!idSchema.safeParse(id).success || id === me.id) return { ok: false };
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("profiles")
     .update({ ativo: !!ativo })
     .eq("id", id)
-    .eq("tipo", "financeiro")
+    .in("tipo", ROLES)
     .select("id")
     .maybeSingle();
   if (error || !data) return { ok: false };
@@ -68,13 +77,13 @@ export async function setUsuarioAtivo(id: string, ativo: boolean): Promise<{ ok:
   return { ok: true };
 }
 
-export async function novaSenhaFinanceiro(id: string): Promise<{ ok: true; email: string; password: string } | { ok: false; error: "failed" | "noSecretKey" }> {
-  await requireUser({ role: "admin" });
-  if (!idSchema.safeParse(id).success) return { ok: false, error: "failed" };
+export async function novaSenhaUsuario(id: string): Promise<{ ok: true; email: string; password: string } | { ok: false; error: "failed" | "noSecretKey" }> {
+  const me = await requireUser({ role: "admin" });
+  if (!idSchema.safeParse(id).success || id === me.id) return { ok: false, error: "failed" };
   const admin = createAdminClient();
   if (!admin) return { ok: false, error: "noSecretKey" };
   const supabase = await createClient();
-  const { data: profile } = await supabase.from("profiles").select("id").eq("id", id).eq("tipo", "financeiro").eq("ativo", true).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("id").eq("id", id).in("tipo", ROLES).eq("ativo", true).maybeSingle();
   if (!profile) return { ok: false, error: "failed" };
 
   const password = temporaryPassword();

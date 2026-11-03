@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck, UserCog } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -32,8 +32,19 @@ export function PrivacyLink({ className }: { className?: string }) {
   );
 }
 
+// Admins only: where logins of other admins and of the finance role are managed.
+export function UsersLink({ className }: { className?: string }) {
+  const t = useTranslations("common");
+  return (
+    <Button variant="ghost" render={<Link href="/financeiro/usuarios" />} nativeButton={false} className={cn("justify-start gap-3 text-muted-foreground", className)}>
+      <UserCog className="size-4" aria-hidden />
+      {t("users")}
+    </Button>
+  );
+}
+
 // Phone header: avatar opens a sheet with the account options.
-export function MobileUserMenu({ nome, email }: { nome: string; email: string | null }) {
+export function MobileUserMenu({ nome, email, admin }: { nome: string; email: string | null; admin?: boolean }) {
   const t = useTranslations("common");
   return (
     <Sheet>
@@ -53,6 +64,7 @@ export function MobileUserMenu({ nome, email }: { nome: string; email: string | 
         </SheetHeader>
         <div className="flex flex-col gap-3 px-4">
           <LanguageSwitcher className="self-start" />
+          {admin && <UsersLink />}
           <PrivacyLink />
           <SignOutButton />
         </div>

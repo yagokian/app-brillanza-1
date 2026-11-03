@@ -6,12 +6,16 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { UsuarioForm, UsuarioRow } from "./usuarios-client";
 
-// Admin only: logins with the 'financeiro' role (financial module only, 2FA required).
-export default async function UsuariosFinanceiroPage() {
-  await requireUser({ role: "admin" });
+// Admin only: logins of admins and of the 'financeiro' role (both with 2FA).
+// Workers have their own screen (Colaboradoras).
+export default async function UsuariosPage() {
+  const me = await requireUser({ role: "admin" });
   const t = await getTranslations("finance.users");
   const supabase = await createClient();
-  const { data } = await supabase.from("profiles").select("id, nome, ativo").eq("tipo", "financeiro").order("nome");
+  const { data } = await supabase.from("profiles").select("id, nome, ativo, tipo")
+    .in("tipo", ["admin", "financeiro"])
+    .order("tipo")
+    .order("nome");
   const admin = createAdminClient();
   const users = await Promise.all(
     (data ?? []).map(async (p) => ({ ...p, email: (await admin?.auth.admin.getUserById(p.id))?.data.user?.email ?? null })),
@@ -32,7 +36,7 @@ export default async function UsuariosFinanceiroPage() {
               <ul className="flex flex-col divide-y">
                 {users.map((u) => (
                   <li key={u.id} className="py-3">
-                    <UsuarioRow id={u.id} nome={u.nome} email={u.email} ativo={u.ativo} />
+                    <UsuarioRow id={u.id} nome={u.nome} email={u.email} ativo={u.ativo} tipo={u.tipo} self={u.id === me.id} />
                   </li>
                 ))}
               </ul>

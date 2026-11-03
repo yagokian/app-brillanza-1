@@ -7,7 +7,7 @@ import type { CurrentUser } from "@/lib/auth";
 import { homeFor } from "@/lib/auth";
 import { BottomNav, SidebarNav } from "./nav-links";
 import { initials } from "@/lib/format";
-import { MobileUserMenu, PrivacyLink, SignOutButton } from "./user-menu";
+import { MobileUserMenu, PrivacyLink, SignOutButton, UsersLink } from "./user-menu";
 
 // One layout, two shapes: sidebar on computers (md+), header + bottom tabs on phones.
 export function AppShell({ user, children }: { user: CurrentUser; children: ReactNode }) {
@@ -29,6 +29,7 @@ export function AppShell({ user, children }: { user: CurrentUser; children: Reac
             </div>
           </div>
           <LanguageSwitcher className="mx-2 self-start" />
+          {user.tipo === "admin" && <UsersLink />}
           <PrivacyLink />
           <SignOutButton />
         </div>
@@ -39,7 +40,7 @@ export function AppShell({ user, children }: { user: CurrentUser; children: Reac
           <Link href={homeFor(user.tipo)} className="py-2">
             <BrandLogo className="max-h-10" />
           </Link>
-          <MobileUserMenu nome={user.nome} email={user.email} />
+          <MobileUserMenu nome={user.nome} email={user.email} admin={user.tipo === "admin"} />
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-[calc(5rem+env(safe-area-inset-bottom))] md:px-8 md:py-8 md:pb-8">
