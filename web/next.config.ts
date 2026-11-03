@@ -31,8 +31,8 @@ const nextConfig: NextConfig = {
   cacheComponents: false,
   poweredByHeader: false,
   experimental: {
-    // Financial attachments go through Server Actions (8 MB files + multipart overhead).
-    serverActions: { bodySizeLimit: "9mb" },
+    // Financial attachments go through Server Actions (4 MB files + multipart overhead; Vercel caps bodies at 4.5 MB).
+    serverActions: { bodySizeLimit: "4.5mb" },
   },
   turbopack: {
     root: import.meta.dirname,

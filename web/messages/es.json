@@ -413,7 +413,7 @@
     "receiptRegistered": "Cobro registrado.",
     "proofFailed": "Pero el justificante no se adjuntó: súbelo de nuevo en Adjuntos.",
     "noMovements": "Aún no hay movimientos. Registrar la cuenta no la liquida: solo un pago o cobro la liquida.",
-    "attachmentsHint": "PDF, JPG, PNG o WEBP de hasta 8 MB. La factura y el recibo bancario de la misma obligación van aquí, en el mismo asiento.",
+    "attachmentsHint": "PDF, JPG, PNG o WEBP de hasta 4 MB. La factura y el recibo bancario de la misma obligación van aquí, en el mismo asiento.",
     "download": "Descargar",
     "attach": "Adjuntar",
     "unknownUser": "Sistema",
@@ -521,7 +521,7 @@
       "servico": "Opcional. No crea asientos automáticos: los importes del servicio siguen en los informes.",
       "justificativa": "Opcional. Queda en el historial.",
       "justificativaRequired": "Obligatoria: el asiento ya tiene movimientos.",
-      "arquivo": "PDF, JPG, PNG o WEBP de hasta 8 MB."
+      "arquivo": "PDF, JPG, PNG o WEBP de hasta 4 MB."
     },
     "sections": {
       "document": "Documento",
@@ -561,7 +561,7 @@
       "data_invalida": "Fecha no válida: no puede ser futura ni anterior al movimiento.",
       "conta_invalida": "Elige una cuenta y una forma de pago activas.",
       "arquivo_invalido": "Archivo no aceptado: sube PDF, JPG, PNG o WEBP.",
-      "arquivo_grande": "Archivo demasiado grande (máximo 8 MB).",
+      "arquivo_grande": "Archivo demasiado grande (máximo 4 MB).",
       "nao_encontrado": "Registro no encontrado.",
       "invalid": "Revisa los campos marcados.",
       "failed": "No se pudo guardar. Inténtalo de nuevo."

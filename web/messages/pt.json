@@ -413,7 +413,7 @@
     "receiptRegistered": "Recebimento registrado.",
     "proofFailed": "Mas o comprovante não foi anexado: envie-o de novo em Anexos.",
     "noMovements": "Nenhuma movimentação ainda. Registrar a conta não a quita: só um pagamento ou recebimento quita.",
-    "attachmentsHint": "PDF, JPG, PNG ou WEBP de até 8 MB. Nota fiscal e boleto da mesma obrigação ficam aqui, no mesmo lançamento.",
+    "attachmentsHint": "PDF, JPG, PNG ou WEBP de até 4 MB. Nota fiscal e boleto da mesma obrigação ficam aqui, no mesmo lançamento.",
     "download": "Baixar",
     "attach": "Anexar",
     "unknownUser": "Sistema",
@@ -521,7 +521,7 @@
       "servico": "Opcional. Não cria lançamento automático: os valores do serviço continuam nos relatórios.",
       "justificativa": "Opcional. Fica no histórico.",
       "justificativaRequired": "Obrigatória: o lançamento já tem movimentações.",
-      "arquivo": "PDF, JPG, PNG ou WEBP de até 8 MB."
+      "arquivo": "PDF, JPG, PNG ou WEBP de até 4 MB."
     },
     "sections": {
       "document": "Documento",
@@ -561,7 +561,7 @@
       "data_invalida": "Data inválida: não pode ser futura nem anterior à movimentação.",
       "conta_invalida": "Escolha uma conta e uma forma de pagamento ativas.",
       "arquivo_invalido": "Arquivo não aceito: envie PDF, JPG, PNG ou WEBP.",
-      "arquivo_grande": "Arquivo grande demais (máximo 8 MB).",
+      "arquivo_grande": "Arquivo grande demais (máximo 4 MB).",
       "nao_encontrado": "Registro não encontrado.",
       "invalid": "Confira os campos destacados.",
       "failed": "Não foi possível salvar. Tente novamente."

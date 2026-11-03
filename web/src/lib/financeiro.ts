@@ -19,8 +19,9 @@ export const PERIODOS = ["vencimento", "emissao", "liquidacao"] as const;
 export const CADASTROS = ["fin_favorecidos", "fin_categorias", "fin_formas_pagamento", "fin_contas"] as const;
 export type Cadastro = (typeof CADASTROS)[number];
 
-// Attachments: PDF and images, up to 8 MB (same limit as the storage bucket).
-export const ANEXO_MAX_BYTES = 8 * 1024 * 1024;
+// Attachments: PDF and images, up to 4 MB. Uploads go through Server Actions and Vercel
+// rejects request bodies over 4.5 MB (the storage bucket itself accepts up to 8 MB).
+export const ANEXO_MAX_BYTES = 4 * 1024 * 1024;
 export const ANEXO_ACCEPT = "application/pdf,image/jpeg,image/png,image/webp";
 
 // Row returned by rpc_fin_listar_parcelas.
