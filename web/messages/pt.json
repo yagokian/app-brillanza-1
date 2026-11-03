@@ -246,5 +246,32 @@
       "emailExists": "Já existe um acesso com este e-mail.",
       "noEmail": "Cadastre um e-mail para criar o acesso."
     }
+  },
+  "reports": {
+    "thisMonth": "Este mês",
+    "lastMonth": "Mês passado",
+    "thisYear": "Este ano",
+    "from": "De",
+    "to": "Até",
+    "client": "Cliente",
+    "worker": "Colaboradora",
+    "all": "Todos",
+    "apply": "Aplicar",
+    "exportCsv": "Exportar CSV",
+    "revenue": "Faturamento",
+    "cost": "Custo",
+    "margin": "Margem",
+    "hoursWorked": "Horas trabalhadas",
+    "hoursPlanned": "Previstas: {hours}",
+    "hours": "Horas",
+    "services": "Serviços",
+    "name": "Nome",
+    "total": "Total",
+    "status": "Status",
+    "byClient": "Por cliente",
+    "byWorker": "Por colaboradora",
+    "empty": "Nenhum serviço no período.",
+    "onlyFinished": "Horas, valores e serviços nas tabelas consideram só serviços concluídos. Horas reais quando há início e fim registrados; senão, a duração estimada.",
+    "truncated": "Período com serviços demais: mostrando só os primeiros 5000. Escolha um período menor."
   }
 }
