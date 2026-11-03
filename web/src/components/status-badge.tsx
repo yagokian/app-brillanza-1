@@ -18,3 +18,11 @@ export function StatusBadge({ status, className }: { status: ServiceStatus; clas
     </span>
   );
 }
+
+// Left border in the status colour, for service cards.
+export const statusBorder: Record<ServiceStatus, string> = {
+  agendado: "border-l-status-agendado",
+  em_andamento: "border-l-status-em-andamento",
+  concluido: "border-l-status-concluido",
+  cancelado: "border-l-status-cancelado",
+};

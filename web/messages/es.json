@@ -62,5 +62,156 @@
     "em_andamento": "En curso",
     "concluido": "Completado",
     "cancelado": "Cancelado"
+  },
+  "form": {
+    "invalid": "Revisa los campos marcados.",
+    "failed": "No se pudo guardar. Inténtalo de nuevo.",
+    "saving": "Guardando…"
+  },
+  "billing": {
+    "hora": "hora",
+    "diaria": "día",
+    "fixo": "fijo"
+  },
+  "legalBasis": {
+    "contrato": "Contrato",
+    "consentimento": "Consentimiento"
+  },
+  "schedule": {
+    "unassigned": "Sin colaboradora",
+    "new": "Nuevo servicio",
+    "edit": "Editar servicio",
+    "today": "Hoy",
+    "week": "Semana",
+    "prevWeek": "Semana anterior",
+    "nextWeek": "Semana siguiente",
+    "emptyDay": "No hay servicios este día.",
+    "pick": "Elige…",
+    "workerNotes": "Observaciones de la colaboradora",
+    "valuesHint": "Al elegir el cliente y la colaboradora se rellenan los importes acordados. Puedes cambiarlos solo para este servicio.",
+    "sections": {
+      "service": "Servicio",
+      "values": "Importes"
+    },
+    "fields": {
+      "cliente": "Cliente",
+      "colaboradora": "Colaboradora",
+      "data": "Fecha",
+      "hora": "Hora de inicio",
+      "duracao": "Duración",
+      "status": "Estado",
+      "motivo_cancelamento": "Motivo de la cancelación",
+      "tipo_cobranca_cliente": "Cobro al cliente",
+      "valor_cliente": "Importe del cliente (€)",
+      "tipo_pagamento_colaboradora": "Pago a la colaboradora",
+      "valor_colaboradora": "Importe de la colaboradora (€)"
+    }
+  },
+  "clients": {
+    "new": "Nuevo cliente",
+    "edit": "Editar",
+    "searchPlaceholder": "Buscar por nombre, teléfono, email o dirección",
+    "empty": "No hay clientes registrados.",
+    "noResults": "No se encontró ningún cliente.",
+    "anonymized": "Anonimizado",
+    "anonymizedOn": "Anonimizado el {date}",
+    "anonymize": "Anonimizar",
+    "anonymizeTitle": "¿Anonimizar este cliente?",
+    "anonymizeText": "Los datos personales (nombre, contacto, dirección y notas) se borrarán para siempre. Los servicios siguen en el historial, sin identificar a la persona. No se puede deshacer.",
+    "anonymizeDone": "Cliente anonimizado.",
+    "history": "Historial de servicios",
+    "noHistory": "Todavía no hay servicios para este cliente.",
+    "noticePending": "Pendiente",
+    "sections": {
+      "contact": "Contacto",
+      "service": "Servicio",
+      "privacy": "Privacidad (RGPD)",
+      "data": "Datos"
+    },
+    "fields": {
+      "nome": "Nombre",
+      "telefone": "Teléfono",
+      "email": "Email",
+      "endereco": "Dirección",
+      "codigo_postal": "Código postal",
+      "cidade": "Ciudad",
+      "data_contratacao": "Fecha de contratación",
+      "tipo_servico": "Tipo de servicio",
+      "frequencia": "Frecuencia",
+      "duracao_horario": "Duración / horario",
+      "dia_semana": "Día de la semana",
+      "tipo_cobranca": "Cobro",
+      "valor_acordado": "Importe (€)",
+      "observacoes": "Observaciones internas",
+      "notas_para_colaboradora": "Notas para la colaboradora",
+      "base_legal": "Base legal",
+      "aviso_privacidade_em": "Aviso de privacidad entregado el"
+    },
+    "hints": {
+      "observacoes": "Solo lo ve la administración.",
+      "notas_para_colaboradora": "La colaboradora del servicio ve estas notas (p. ej.: cómo entrar, cuidados).",
+      "aviso_privacidade_em": "Déjalo vacío si el cliente aún no recibió el aviso."
+    }
+  },
+  "days": {
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mié",
+    "thu": "Jue",
+    "fri": "Vie",
+    "sat": "Sáb",
+    "sun": "Dom"
+  },
+  "workers": {
+    "new": "Nueva colaboradora",
+    "empty": "No hay colaboradoras registradas.",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "noLogin": "Sin acceso",
+    "createdTitle": "Colaboradora registrada.",
+    "createdNoLogin": "Sin email, todavía no tiene acceso a la app. Puedes crear el acceso después, en su ficha.",
+    "backToList": "Volver a la lista",
+    "accessCreated": "Acceso a la app",
+    "tempPassword": "Contraseña temporal",
+    "passwordOnce": "Anótala o cópiala ahora: esta contraseña no se vuelve a mostrar. En el primer acceso, ella creará una nueva.",
+    "copy": "Copiar email y contraseña",
+    "copied": "Copiado.",
+    "copyFailed": "No se pudo copiar. Selecciónala y cópiala a mano.",
+    "hasLogin": "Entra en la app con el email registrado.",
+    "noLoginText": "Todavía no tiene acceso a la app.",
+    "resetPassword": "Generar nueva contraseña temporal",
+    "createAccess": "Crear acceso a la app",
+    "resetConfirm": "La contraseña actual dejará de funcionar. ¿Generar una nueva contraseña temporal?",
+    "deactivate": "Desactivar",
+    "activate": "Reactivar",
+    "deactivateHint": "Desactivada, ya no entra en la app ni aparece para nuevos servicios. Los datos y el historial se conservan.",
+    "deactivated": "Colaboradora desactivada.",
+    "activated": "Colaboradora reactivada.",
+    "sections": {
+      "data": "Datos",
+      "access": "Acceso"
+    },
+    "fields": {
+      "nome": "Nombre",
+      "telefone": "Teléfono",
+      "email": "Email",
+      "idioma": "Idioma de la app",
+      "tipos_de_servico": "Tipos de servicio",
+      "dias_disponiveis": "Días disponibles",
+      "tipo_pagamento": "Pago",
+      "valor_pagamento": "Importe (€)",
+      "observacoes": "Observaciones internas"
+    },
+    "hints": {
+      "emailNew": "Con email, el acceso a la app se crea al momento y recibes una contraseña temporal.",
+      "emailLogin": "Es su email de acceso: cambiarlo aquí cambia el acceso.",
+      "tipos_de_servico": "Separa con comas. P. ej.: residencial, oficina"
+    },
+    "errors": {
+      "failed": "No se pudo guardar. Inténtalo de nuevo.",
+      "noSecretKey": "Falta configurar SUPABASE_SECRET_KEY en el servidor para crear accesos.",
+      "emailExists": "Ya existe un acceso con este email.",
+      "noEmail": "Registra un email para crear el acceso."
+    }
   }
 }
