@@ -22,7 +22,7 @@ export const navByRole: Record<Role, NavItem[]> = {
     { href: "/admin", labelKey: "dashboard", icon: LayoutDashboard, exact: true },
     { href: "/admin/agenda", labelKey: "schedule", icon: CalendarDays },
     { href: "/admin/clientes", labelKey: "clients", icon: Users },
-    { href: "/admin/trabajadoras", labelKey: "workers", icon: UserRoundCheck },
+    { href: "/admin/colaboradoras", labelKey: "workers", icon: UserRoundCheck },
     { href: "/admin/informes", labelKey: "reports", icon: BarChart3 },
   ],
   worker: [

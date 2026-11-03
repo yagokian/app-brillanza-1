@@ -14,7 +14,7 @@ export type WorkerService = {
   duracao_estimada: string | null;
   status: ServiceStatus;
   checklist: Record<string, boolean>;
-  observacoes_trabalhadora: string | null;
+  observacoes_colaboradora: string | null;
   hora_inicio_real: string | null;
   hora_fim_real: string | null;
   cliente_nome: string;

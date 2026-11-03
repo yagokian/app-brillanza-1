@@ -30,20 +30,20 @@ npm run dev
 
 ## Segurança e RGPD: o que já está no código
 
-- **Admin**: acesso às tabelas pelo RLS. **Trabalhadora**: sem acesso direto às tabelas; usa só as
+- **Admin**: acesso às tabelas pelo RLS. **Colaboradora**: sem acesso direto às tabelas; usa só as
   funções `rpc_*`, que nunca devolvem valores financeiros.
-- Endereço e telefone do cliente só aparecem para a trabalhadora em serviços de ontem em diante.
+- Endereço e telefone do cliente só aparecem para a colaboradora em serviços de ontem em diante.
 - Todo usuário novo nasce `worker`. Promover a admin só via SQL.
-- Admin ou trabalhadora com `ativo = false` perde o acesso na hora.
+- Admin ou colaboradora com `ativo = false` perde o acesso na hora.
 - Troca de senha obrigatória no primeiro acesso.
 - `audit_log` registra quem alterou quais campos e quando, mas não os valores.
-- Anonimização de clientes e trabalhadoras (direito de supressão), mantendo os serviços para estatística.
+- Anonimização de clientes e colaboradoras (direito de supressão), mantendo os serviços para estatística.
 - Cabeçalhos de segurança (CSP, HSTS, anti-iframe), páginas `no-store` e nenhum cache offline de dados.
 
 ## Próximas fases
 
-2. Administração: clientes, trabalhadoras e agenda (calendário).
-3. Trabalhadora: detalhe do serviço, iniciar/finalizar, checklist, histórico.
+2. Administração: clientes, colaboradoras e agenda (calendário).
+3. Colaboradora: detalhe do serviço, iniciar/finalizar, checklist, histórico.
 4. Relatórios e indicadores.
 5. RGPD na interface: exportar e anonimizar dados, registro do aviso de privacidade, 2FA de admin.
 6. Testes e publicação (hospedagem com funções na UE).

@@ -23,7 +23,17 @@ export function LoginForm({ inactive }: { inactive: boolean }) {
         <form action={action} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">{t("email")}</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" inputMode="email" required className="h-11" />
+            <Input
+              key={state?.email}
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              required
+              defaultValue={state?.email}
+              className="h-11"
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="password">{t("password")}</Label>

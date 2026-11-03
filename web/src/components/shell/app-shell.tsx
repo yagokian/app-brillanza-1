@@ -6,7 +6,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { CurrentUser } from "@/lib/auth";
 import { homeFor } from "@/lib/auth";
 import { BottomNav, SidebarNav } from "./nav-links";
-import { initials, MobileUserMenu, SignOutButton } from "./user-menu";
+import { initials } from "@/lib/format";
+import { MobileUserMenu, SignOutButton } from "./user-menu";
 
 // One layout, two shapes: sidebar on computers (md+), header + bottom tabs on phones.
 export function AppShell({ user, children }: { user: CurrentUser; children: ReactNode }) {
