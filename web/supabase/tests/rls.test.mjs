@@ -58,6 +58,16 @@ await as(W1, async () => {
   const oldRow = ag.find(r => r.cliente_nome === 'Antiga');
   ok(oldRow && oldRow.cliente_endereco === null, 'old service hides client address');
   ok(ag.find(r => r.id === s1).cliente_telefone === '600111222', 'today service shows client phone');
+  const det = (await q(`select * from public.rpc_meu_servico($1)`, [s1])).rows;
+  ok(det.length === 1 && det[0].cliente_telefone === '600111222', 'detail returns own service');
+  ok((await q(`select * from public.rpc_meu_servico($1)`, [s2])).rows.length === 0, 'detail hides other worker service');
+  ok((await q(`select * from public.rpc_meu_servico($1)`, [oldRow.id])).rows[0].cliente_endereco === null, 'detail of old service hides client address');
+  // No worker-callable RPC may return a column named like a financial value.
+  const fin = (await q(`select p.proname, a.n from pg_proc p cross join lateral unnest(p.proargnames) a(n)
+    join pg_namespace ns on ns.oid = p.pronamespace
+    where ns.nspname = 'public' and p.proname like 'rpc\\_%' and p.proname not like 'rpc\\_admin\\_%'
+      and a.n ~ '(valor|preco|pagamento|cobranca|margem)'`)).rows;
+  ok(fin.length === 0, 'no worker RPC exposes financial columns' + (fin.length ? ' ' + JSON.stringify(fin) : ''));
   ok((await q(`select public.rpc_iniciar_servico($1) r`, [s1])).rows[0].r === true, 'worker starts own service');
   ok((await q(`select public.rpc_iniciar_servico($1) r`, [s2])).rows[0].r === false, 'worker cannot start other worker service');
   ok((await q(`select public.rpc_salvar_checklist($1,'{"Cocina":true}') r`, [s1])).rows[0].r === true, 'worker saves checklist');

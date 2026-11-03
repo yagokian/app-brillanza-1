@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Clock, MapPin } from "lucide-react";
 import { PageHeader } from "@/components/shell/app-shell";
-import { StatusBadge } from "@/components/status-badge";
+import { StatusBadge, statusBorder } from "@/components/status-badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -27,7 +28,8 @@ export default async function WorkerToday() {
         <ul className="flex flex-col gap-3">
           {services.map((service) => (
             <li key={service.id}>
-              <Card>
+              <Link href={`/agenda/${service.id}`} className="block rounded-xl focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none">
+              <Card className={`border-l-4 transition-colors hover:bg-muted/50 ${statusBorder[service.status]}`}>
                 <CardContent className="flex flex-col gap-2">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium">{service.cliente_nome}</p>
@@ -49,6 +51,7 @@ export default async function WorkerToday() {
                   )}
                 </CardContent>
               </Card>
+              </Link>
             </li>
           ))}
         </ul>

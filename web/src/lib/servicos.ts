@@ -24,3 +24,6 @@ export type WorkerService = {
   cliente_telefone: string | null;
   cliente_notas: string | null;
 };
+
+// Default checklist. Stored in servicos.checklist as { key: true }; labels live in messages (worker.checklistItems).
+export const CHECKLIST_ITEMS = ["cozinha", "banheiros", "quartos", "sala", "po", "chao", "lixo"] as const;

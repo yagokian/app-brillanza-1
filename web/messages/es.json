@@ -50,12 +50,45 @@
   },
   "dashboard": {
     "greeting": "Hola, {name}",
-    "subtitle": "Resumen de la operación"
+    "subtitle": "Resumen de la operación",
+    "listAll": "Servicios del día",
+    "empty": "No hay servicios.",
+    "prevDay": "Día anterior",
+    "nextDay": "Día siguiente",
+    "late": "Con retraso",
+    "lateCount": "{count, plural, one {# con retraso} other {# con retraso}}",
+    "unassignedCount": "{count, plural, one {# servicio sin colaboradora} other {# servicios sin colaboradora}}"
   },
   "worker": {
     "greeting": "Hola, {name}",
     "todaySubtitle": "Tus servicios de hoy",
-    "noServices": "No tienes servicios programados para hoy."
+    "noServices": "No tienes servicios programados para hoy.",
+    "duration": "{duration} aprox.",
+    "clientNotes": "Notas para ti",
+    "startedAt": "Inicio: {time}",
+    "finishedAt": "Fin: {time}",
+    "start": "Iniciar servicio",
+    "startedToast": "Servicio iniciado",
+    "finish": "Finalizar servicio",
+    "finishTitle": "¿Finalizar el servicio?",
+    "finishText": "Checklist: {done} de {total}. Tus observaciones se guardarán con el servicio.",
+    "finishedToast": "Servicio finalizado",
+    "checklist": "Checklist",
+    "notes": "Observaciones",
+    "notesPlaceholder": "Algo que la oficina deba saber (opcional)",
+    "notesSaved": "Observaciones guardadas",
+    "noHistory": "No hay servicios en este periodo.",
+    "older": "Anteriores",
+    "newer": "Más recientes",
+    "checklistItems": {
+      "cozinha": "Cocina",
+      "banheiros": "Baños",
+      "quartos": "Dormitorios",
+      "sala": "Salón",
+      "po": "Quitar el polvo",
+      "chao": "Suelos",
+      "lixo": "Basura"
+    }
   },
   "status": {
     "agendado": "Programado",
