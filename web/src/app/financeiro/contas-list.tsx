@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ChevronRight, HandCoins, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, HandCoins, Plus, SlidersHorizontal } from "lucide-react";
 import { PageHeader } from "@/components/shell/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -43,6 +43,9 @@ export async function ContasList({ natureza, params }: { natureza: Natureza; par
   const ate = isIsoDate(params.ate) ? params.ate : "";
   const parte = /^[cf]:[0-9a-f-]{36}$/.test(params.parte ?? "") ? params.parte! : "";
   const servico = params.servico === "com" || params.servico === "sem" ? params.servico : "";
+
+  const activeFilters =
+    [situacao !== "em_aberto", parte, servico, de, ate, isUuid(params.categoria), isUuid(params.conta), isUuid(params.forma)].filter(Boolean).length;
 
   const filtros = {
     natureza,
@@ -102,7 +105,20 @@ export async function ContasList({ natureza, params }: { natureza: Natureza; par
 
       <Card size="sm" className="mb-4">
         <CardContent>
-          <form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" action={`/financeiro/${natureza}`}>
+          {/* Collapsed until a filter is in use, so on phones the list starts near the top. */}
+          <details open={activeFilters > 0} className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 font-medium [&::-webkit-details-marker]:hidden">
+              <span className="inline-flex items-center gap-2">
+                <SlidersHorizontal className="size-4" aria-hidden />
+                {t("filters.title")}
+                <span className="font-normal text-muted-foreground">
+                  · {situacao ? t(`status.${situacao}`) : t("filters.all")}
+                  {activeFilters > 1 && ` +${activeFilters - 1}`}
+                </span>
+              </span>
+              <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden />
+            </summary>
+          <form className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" action={`/financeiro/${natureza}`}>
             {select("situacao", t("filters.status"), situacao, FILTRO_SITUACOES.map((s) => ({ value: s, label: t(`status.${s}`) })))}
             {select("parte", t(pay ? "fields.payee" : "fields.party"), parte, parties)}
             {select("categoria", t("fields.categoria"), isUuid(params.categoria) ? params.categoria! : "", categorias.map((c) => ({ value: c.id, label: c.nome })))}
@@ -140,6 +156,7 @@ export async function ContasList({ natureza, params }: { natureza: Natureza; par
             </div>
           </form>
           <p className="mt-2 text-xs text-muted-foreground">{t("filters.accountHint")}</p>
+          </details>
         </CardContent>
       </Card>
 

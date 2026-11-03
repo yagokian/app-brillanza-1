@@ -108,7 +108,7 @@ export default async function ResultadosPage({ searchParams }: { searchParams: P
       <p className="mt-2 text-xs text-muted-foreground">{t("howItWorks")}</p>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-start">
-        <section>
+        <section className="min-w-0">
           <h2 className="mb-3 text-lg font-semibold">{t("byMonth")}</h2>
           <div className="overflow-x-auto rounded-xl bg-card ring-1 ring-foreground/10">
             <Table>
@@ -148,7 +148,7 @@ export default async function ResultadosPage({ searchParams }: { searchParams: P
           </div>
         </section>
 
-        <section>
+        <section className="min-w-0">
           <h2 className="mb-3 text-lg font-semibold">{t("byCategory")}</h2>
           <Card>
             <CardHeader className="sr-only">

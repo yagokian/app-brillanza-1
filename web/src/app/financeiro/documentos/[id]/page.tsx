@@ -153,7 +153,7 @@ export default async function DocumentoPage({ params, searchParams }: PageProps<
       )}
 
       <div className="grid gap-4 lg:grid-cols-[2fr_3fr] lg:items-start">
-        <Card>
+        <Card className="min-w-0">
           <CardHeader>
             <CardTitle>{t("sections.document")}</CardTitle>
           </CardHeader>
@@ -169,7 +169,7 @@ export default async function DocumentoPage({ params, searchParams }: PageProps<
           </CardContent>
         </Card>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <Card>
             <CardHeader>
               <CardTitle>{t("sections.installments")}</CardTitle>

@@ -455,7 +455,8 @@
       },
       "withService": "Com serviço vinculado",
       "withoutService": "Sem serviço vinculado",
-      "accountHint": "Conta, forma de pagamento e período por liquidação consideram só movimentações não estornadas."
+      "accountHint": "Conta, forma de pagamento e período por liquidação consideram só movimentações não estornadas.",
+      "title": "Filtros"
     },
     "status": {
       "aberta": "Em aberto",

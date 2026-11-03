@@ -455,7 +455,8 @@
       },
       "withService": "Con servicio vinculado",
       "withoutService": "Sin servicio vinculado",
-      "accountHint": "Cuenta, forma de pago y periodo por liquidación solo tienen en cuenta movimientos no extornados."
+      "accountHint": "Cuenta, forma de pago y periodo por liquidación solo tienen en cuenta movimientos no extornados.",
+      "title": "Filtros"
     },
     "status": {
       "aberta": "Pendiente",
