@@ -1,17 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
+import { decimal, toCsv } from "@/lib/csv";
 import { loadServices, parseFilter, workedMinutes } from "../data";
-
-// Cells that a spreadsheet would read as a formula get a leading quote (CSV injection).
-function cell(value: string | number | null | undefined) {
-  if (value == null) return "";
-  let text = String(value);
-  if (/^[=+\-@\t\r]/.test(text) && typeof value === "string") text = `'${text}`;
-  return /[";\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
-// Decimal comma, as Excel expects in Spain and Portugal.
-const decimal = (value: number | null) => (value == null ? "" : value.toFixed(2).replace(".", ","));
 
 export async function GET(request: Request) {
   await requireUser({ role: "admin" });
@@ -46,8 +36,7 @@ export async function GET(request: Request) {
     ];
   });
 
-  // BOM so Excel opens it as UTF-8; ";" because "," is the decimal separator.
-  const csv = "﻿" + [header, ...rows].map((row) => row.map(cell).join(";")).join("\r\n");
+  const csv = toCsv([header, ...rows]);
   return new Response(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",

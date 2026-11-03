@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
+import { RgpdPanel } from "@/components/rgpd/rgpd-panel";
 import { PageHeader } from "@/components/shell/app-shell";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -31,11 +32,16 @@ export default async function EditarColaboradoraPage({ params }: { params: Promi
       </Link>
       <PageHeader title={data.nome} />
       {data.anonimizado_em ? (
-        <p className="text-muted-foreground">{t("clients.anonymized")}</p>
+        <div className="max-w-xl">
+          <RgpdPanel kind="colaboradora" id={data.id} nome={data.nome} anonimizadoEm={data.anonimizado_em} />
+        </div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[3fr_2fr] lg:items-start">
           <ColaboradoraForm initial={initial} hasLogin={!!data.user_id} />
-          <AccessPanel id={data.id} ativo={data.ativo} hasLogin={!!data.user_id} hasEmail={!!data.email} />
+          <div className="flex flex-col gap-4">
+            <AccessPanel id={data.id} ativo={data.ativo} hasLogin={!!data.user_id} hasEmail={!!data.email} />
+            <RgpdPanel kind="colaboradora" id={data.id} nome={data.nome} anonimizadoEm={null} />
+          </div>
         </div>
       )}
     </>

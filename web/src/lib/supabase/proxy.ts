@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/auth"];
+const PUBLIC_PATHS = ["/login", "/auth", "/privacidad"];
 const SIGNED_OUT_ONLY = ["/login"];
 
 // Refreshes the Supabase session on every request and sends anonymous visitors to /login.

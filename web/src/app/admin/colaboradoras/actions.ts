@@ -169,3 +169,28 @@ export async function gerarAcesso(id: string, idiomaRaw?: string): Promise<Acces
   revalidatePath("/admin/colaboradoras");
   return { ok: true, email: colab.email, password: result.password };
 }
+
+// Right to erasure (art. 17 RGPD): personal data is wiped and the login account deleted.
+// Needs the secret key, so the account never outlives the anonymisation.
+export async function anonimizarColaboradora(id: string): Promise<{ ok: boolean; error?: "noSecretKey" }> {
+  await requireUser({ role: "admin" });
+  if (!idSchema.safeParse(id).success) return { ok: false };
+  const admin = createAdminClient();
+  if (!admin) return { ok: false, error: "noSecretKey" };
+
+  const supabase = await createClient();
+  const { data: current } = await supabase.from("colaboradoras").select("id").eq("id", id).is("anonimizado_em", null).maybeSingle();
+  if (!current) return { ok: false };
+
+  const { data: userId, error } = await supabase.rpc("rpc_admin_anonimizar_colaboradora", { p_id: id });
+  if (error) return { ok: false };
+  if (typeof userId === "string") {
+    // The profile was already cleared and deactivated by the RPC; deleting the account removes it.
+    const { error: deleteError } = await admin.auth.admin.deleteUser(userId);
+    if (deleteError) console.warn(`[anonimizar] login not deleted: ${deleteError.code ?? "unknown"}`);
+  }
+
+  revalidatePath("/admin/colaboradoras");
+  revalidatePath(`/admin/colaboradoras/${id}`);
+  return { ok: true };
+}

@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
   // Every page is per-user and holds personal data, so nothing is prerendered or cached on the server.
   cacheComponents: false,
   poweredByHeader: false,
+  experimental: {
+    // Financial attachments go through Server Actions (8 MB files + multipart overhead).
+    serverActions: { bodySizeLimit: "9mb" },
+  },
   turbopack: {
     root: import.meta.dirname,
     rules: {

@@ -51,3 +51,35 @@ export async function saveServico(_prev: FormState, formData: FormData): Promise
   revalidatePath("/admin/agenda");
   redirect(`/admin/agenda?d=${parsed.data.data_servico}`);
 }
+
+export type ServicoResult = { ok: true } | { ok: false; error: "started" | "invalid" | "failed" };
+
+// Quick cancel from the day panel. Finished or already cancelled services stay as they are.
+export async function cancelarServico(id: string, motivo: string): Promise<ServicoResult> {
+  await requireUser({ role: "admin" });
+  const text = typeof motivo === "string" ? motivo.trim().slice(0, 500) : "";
+  if (!z.uuid().safeParse(id).success || !text) return { ok: false, error: "invalid" };
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("servicos")
+    .update({ status: "cancelado", motivo_cancelamento: text })
+    .eq("id", id)
+    .in("status", ["agendado", "em_andamento"])
+    .select("id");
+  if (error || !data?.length) return { ok: false, error: "failed" };
+  revalidatePath("/admin", "layout");
+  return { ok: true };
+}
+
+// Deletes a service created by mistake. The database only allows it if the service never
+// started (trigger bloquear_exclusao); the deletion is kept in audit_log.
+export async function excluirServico(id: string): Promise<ServicoResult> {
+  await requireUser({ role: "admin" });
+  if (!z.uuid().safeParse(id).success) return { ok: false, error: "invalid" };
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("servicos").delete().eq("id", id).select("id");
+  if (error) return { ok: false, error: error.message === "servico_iniciado" ? "started" : "failed" };
+  if (!data?.length) return { ok: false, error: "failed" };
+  revalidatePath("/admin", "layout");
+  return { ok: true };
+}

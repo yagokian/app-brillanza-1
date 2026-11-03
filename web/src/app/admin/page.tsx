@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SERVICE_STATUSES, todayInMadrid, type ServiceStatus } from "@/lib/servicos";
 import { cn } from "@/lib/utils";
 import { DayPicker } from "./day-picker";
+import { ServicoActions } from "./servico-actions";
 
 type Row = {
   id: string;
@@ -144,11 +145,11 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
               const started = time(s.hora_inicio_real);
               const finished = time(s.hora_fim_real);
               return (
-                <li key={s.id}>
+                <li key={s.id} className="flex items-center gap-2">
                   <Link
                     href={`/admin/agenda/${s.id}`}
                     className={cn(
-                      "flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border-l-4 bg-card p-3 text-sm ring-1 ring-foreground/10 hover:bg-muted/60",
+                      "flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border-l-4 bg-card p-3 text-sm ring-1 ring-foreground/10 hover:bg-muted/60",
                       statusBorder[s.status],
                     )}
                   >
@@ -169,6 +170,12 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
                       )}
                     </span>
                   </Link>
+                  <ServicoActions
+                    id={s.id}
+                    status={s.status}
+                    started={!!s.hora_inicio_real}
+                    label={`${s.clientes?.nome ?? ""} · ${formatDate(day, locale)}${s.hora_inicio_prevista ? ` ${s.hora_inicio_prevista.slice(0, 5)}` : ""}`}
+                  />
                 </li>
               );
             })}

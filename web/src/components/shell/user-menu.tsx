@@ -1,12 +1,14 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import Link from "next/link";
+import { LogOut, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { initials } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 export function SignOutButton({ className }: { className?: string }) {
   const t = useTranslations("common");
@@ -17,6 +19,16 @@ export function SignOutButton({ className }: { className?: string }) {
         {t("signOut")}
       </Button>
     </form>
+  );
+}
+
+export function PrivacyLink({ className }: { className?: string }) {
+  const t = useTranslations("common");
+  return (
+    <Button variant="ghost" render={<Link href="/privacidad" />} nativeButton={false} className={cn("justify-start gap-3 text-muted-foreground", className)}>
+      <ShieldCheck className="size-4" aria-hidden />
+      {t("privacy")}
+    </Button>
   );
 }
 
@@ -41,6 +53,7 @@ export function MobileUserMenu({ nome, email }: { nome: string; email: string | 
         </SheetHeader>
         <div className="flex flex-col gap-3 px-4">
           <LanguageSwitcher className="self-start" />
+          <PrivacyLink />
           <SignOutButton />
         </div>
       </SheetContent>

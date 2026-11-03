@@ -71,7 +71,8 @@ export async function saveCliente(_prev: FormState, formData: FormData): Promise
   redirect(`/admin/clientes/${id}`);
 }
 
-export async function anonimizarCliente(id: string): Promise<{ ok: boolean }> {
+// Right to erasure (art. 17 RGPD). The audit log records who did it and when.
+export async function anonimizarCliente(id: string): Promise<{ ok: boolean; error?: "noSecretKey" }> {
   await requireUser({ role: "admin" });
   const parsed = idSchema.safeParse(id);
   if (!parsed.success) return { ok: false };
@@ -81,5 +82,6 @@ export async function anonimizarCliente(id: string): Promise<{ ok: boolean }> {
   if (error || data !== true) return { ok: false };
 
   revalidatePath("/admin/clientes");
+  revalidatePath(`/admin/clientes/${parsed.data}`);
   return { ok: true };
 }

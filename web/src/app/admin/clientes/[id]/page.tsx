@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowLeft, Pencil, Plus } from "lucide-react";
+import { RgpdPanel } from "@/components/rgpd/rgpd-panel";
 import { PageHeader } from "@/components/shell/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,6 @@ import { requireUser } from "@/lib/auth";
 import { formatDate, formatMoney } from "@/lib/format";
 import type { ServiceStatus } from "@/lib/servicos";
 import { createClient } from "@/lib/supabase/server";
-import { AnonymizeButton } from "./anonymize-button";
 
 type ServicoRow = {
   id: string;
@@ -69,33 +69,33 @@ export default async function ClientePage({ params }: { params: Promise<{ id: st
         description={c.anonimizado_em ? t("clients.anonymizedOn", { date: formatDate(c.anonimizado_em, locale) }) : undefined}
         actions={
           !c.anonimizado_em && (
-            <div className="flex gap-2">
-              <AnonymizeButton id={c.id} />
-              <Button size="lg" render={<Link href={`/admin/clientes/${c.id}/editar`} />} nativeButton={false}>
-                <Pencil aria-hidden />
-                {t("clients.edit")}
-              </Button>
-            </div>
+            <Button size="lg" render={<Link href={`/admin/clientes/${c.id}/editar`} />} nativeButton={false}>
+              <Pencil aria-hidden />
+              {t("clients.edit")}
+            </Button>
           )
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-[2fr_3fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("clients.sections.data")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <dl className="flex flex-col gap-3">
-              {rows.map(([key, value]) => (
-                <div key={key}>
-                  <dt className="text-xs text-muted-foreground">{t(`clients.fields.${key}`)}</dt>
-                  <dd className="text-sm whitespace-pre-line">{value || "—"}</dd>
-                </div>
-              ))}
-            </dl>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 lg:grid-cols-[2fr_3fr] lg:items-start">
+        <div className="flex flex-col gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("clients.sections.data")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <dl className="flex flex-col gap-3">
+                {rows.map(([key, value]) => (
+                  <div key={key}>
+                    <dt className="text-xs text-muted-foreground">{t(`clients.fields.${key}`)}</dt>
+                    <dd className="text-sm whitespace-pre-line">{value || "—"}</dd>
+                  </div>
+                ))}
+              </dl>
+            </CardContent>
+          </Card>
+          <RgpdPanel kind="cliente" id={c.id} nome={c.nome} anonimizadoEm={c.anonimizado_em} />
+        </div>
 
         <Card>
           <CardHeader className="flex items-center justify-between gap-2">
