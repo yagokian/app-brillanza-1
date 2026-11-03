@@ -1,0 +1,66 @@
+{
+  "app": {
+    "name": "Brillanza Limpiezas",
+    "tagline": "Gestión interna"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando…",
+    "comingSoon": "Esta sección estará disponible en la próxima fase.",
+    "language": "Idioma",
+    "signOut": "Cerrar sesión",
+    "menu": "Menú"
+  },
+  "languages": {
+    "es": "Español",
+    "pt": "Português"
+  },
+  "auth": {
+    "title": "Accede a tu cuenta",
+    "subtitle": "Usa el correo y la contraseña que te dio la administración.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "submitting": "Entrando…",
+    "invalid": "Correo o contraseña incorrectos.",
+    "inactive": "Tu acceso está desactivado. Habla con la administración.",
+    "privacyNotice": "Tratamos tus datos solo para la gestión interna del servicio, según el RGPD.",
+    "changePassword": {
+      "title": "Crea una nueva contraseña",
+      "subtitle": "Por seguridad, cambia la contraseña temporal antes de continuar.",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Repite la contraseña",
+      "submit": "Guardar contraseña",
+      "submitting": "Guardando…",
+      "tooShort": "La contraseña debe tener al menos 10 caracteres.",
+      "mismatch": "Las contraseñas no coinciden.",
+      "weak": "Usa letras y números.",
+      "failed": "No se pudo cambiar la contraseña. Inténtalo de nuevo."
+    }
+  },
+  "nav": {
+    "dashboard": "Inicio",
+    "schedule": "Agenda",
+    "clients": "Clientes",
+    "workers": "Trabajadoras",
+    "reports": "Informes",
+    "today": "Hoy",
+    "history": "Historial"
+  },
+  "dashboard": {
+    "greeting": "Hola, {name}",
+    "subtitle": "Resumen de la operación"
+  },
+  "worker": {
+    "greeting": "Hola, {name}",
+    "todaySubtitle": "Tus servicios de hoy",
+    "noServices": "No tienes servicios programados para hoy."
+  },
+  "status": {
+    "agendado": "Programado",
+    "em_andamento": "En curso",
+    "concluido": "Completado",
+    "cancelado": "Cancelado"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "app": {
+    "name": "Brillanza Limpiezas",
+    "tagline": "Gestão interna"
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "loading": "Carregando…",
+    "comingSoon": "Esta seção estará disponível na próxima fase.",
+    "language": "Idioma",
+    "signOut": "Sair",
+    "menu": "Menu"
+  },
+  "languages": {
+    "es": "Español",
+    "pt": "Português"
+  },
+  "auth": {
+    "title": "Acesse sua conta",
+    "subtitle": "Use o e-mail e a senha que a administração te passou.",
+    "email": "E-mail",
+    "password": "Senha",
+    "submit": "Entrar",
+    "submitting": "Entrando…",
+    "invalid": "E-mail ou senha incorretos.",
+    "inactive": "Seu acesso está desativado. Fale com a administração.",
+    "privacyNotice": "Tratamos seus dados apenas para a gestão interna do serviço, conforme o RGPD.",
+    "changePassword": {
+      "title": "Crie uma nova senha",
+      "subtitle": "Por segurança, troque a senha temporária antes de continuar.",
+      "newPassword": "Nova senha",
+      "confirmPassword": "Repita a senha",
+      "submit": "Salvar senha",
+      "submitting": "Salvando…",
+      "tooShort": "A senha deve ter pelo menos 10 caracteres.",
+      "mismatch": "As senhas não coincidem.",
+      "weak": "Use letras e números.",
+      "failed": "Não foi possível trocar a senha. Tente novamente."
+    }
+  },
+  "nav": {
+    "dashboard": "Início",
+    "schedule": "Agenda",
+    "clients": "Clientes",
+    "workers": "Trabalhadoras",
+    "reports": "Relatórios",
+    "today": "Hoje",
+    "history": "Histórico"
+  },
+  "dashboard": {
+    "greeting": "Olá, {name}",
+    "subtitle": "Resumo da operação"
+  },
+  "worker": {
+    "greeting": "Olá, {name}",
+    "todaySubtitle": "Seus serviços de hoje",
+    "noServices": "Você não tem serviços agendados para hoje."
+  },
+  "status": {
+    "agendado": "Agendado",
+    "em_andamento": "Em andamento",
+    "concluido": "Concluído",
+    "cancelado": "Cancelado"
+  }
+}
