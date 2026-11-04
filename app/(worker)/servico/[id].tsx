@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
-import { Text, Card, Button, Chip, TextInput, Surface } from 'react-native-paper';
+import { Text, Card, Button, Chip, TextInput, Surface, Checkbox } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { theme, statusColors } from '../../../src/lib/theme';
 import { Servico } from '../../../src/types/database';
-import { getServicoById, startServico, finishServico, saveObservacoes } from '../../../src/services/servicos';
+import { getServicoById, startServico, finishServico, saveObservacoes, saveChecklist } from '../../../src/services/servicos';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -17,6 +17,7 @@ export default function ServicoDetailScreen() {
   const [updating, setUpdating] = useState(false);
   const [servico, setServico] = useState<Servico | null>(null);
   const [observacoes, setObservacoes] = useState('');
+  const [checklist, setChecklist] = useState<Record<string, boolean>>({});
 
   const loadServico = useCallback(async () => {
     if (!id) return;
@@ -24,6 +25,13 @@ export default function ServicoDetailScreen() {
       const data = await getServicoById(id);
       setServico(data);
       setObservacoes(data.observacoes_trabalhadora || '');
+      setChecklist(data.checklist || {
+        "Limpar banheiros": false,
+        "Aspirar tapetes": false,
+        "Limpar cozinha": false,
+        "Remover lixo": false,
+        "Passar pano no chão": false
+      });
     } catch (error) {
       console.error('Error loading servico:', error);
       Alert.alert('Erro', 'Nao foi possivel carregar o servico.');
@@ -36,6 +44,28 @@ export default function ServicoDetailScreen() {
   useEffect(() => {
     loadServico();
   }, [loadServico]);
+
+  async function handleToggleChecklistItem(key: string) {
+    if (!id || !servico) return;
+    if (servico.status === 'concluido' || servico.status === 'cancelado') {
+      return;
+    }
+
+    const updatedChecklist = {
+      ...checklist,
+      [key]: !checklist[key]
+    };
+    
+    setChecklist(updatedChecklist);
+
+    try {
+      await saveChecklist(id, updatedChecklist);
+    } catch (error) {
+      console.error('Error saving checklist:', error);
+      setChecklist(checklist);
+      Alert.alert('Erro', 'Não foi possível salvar o checklist.');
+    }
+  }
 
   async function handleIniciar() {
     if (!id || !servico) return;
@@ -248,6 +278,38 @@ export default function ServicoDetailScreen() {
           </Card.Content>
         </Card>
 
+        {/* Checklist */}
+        <Card style={styles.card}>
+          <Card.Content>
+            <Text variant="titleMedium" style={styles.cardTitle}>
+              Checklist de Tarefas
+            </Text>
+            {Object.keys(checklist).map((key) => (
+              <View key={key} style={styles.checklistItem}>
+                <Checkbox.Android
+                  status={checklist[key] ? 'checked' : 'unchecked'}
+                  onPress={() => handleToggleChecklistItem(key)}
+                  disabled={servico.status === 'concluido' || servico.status === 'cancelado' || updating}
+                  color={theme.colors.primary}
+                />
+                <Text
+                  style={[
+                    styles.checklistText,
+                    checklist[key] && styles.checklistTextChecked,
+                  ]}
+                  onPress={() => {
+                    if (servico.status !== 'concluido' && servico.status !== 'cancelado' && !updating) {
+                      handleToggleChecklistItem(key);
+                    }
+                  }}
+                >
+                  {key}
+                </Text>
+              </View>
+            ))}
+          </Card.Content>
+        </Card>
+
         {/* Observacoes */}
         <Card style={styles.card}>
           <Card.Content>
@@ -387,6 +449,21 @@ const styles = StyleSheet.create({
   },
   observacoesInput: {
     marginBottom: 8,
+  },
+  checklistItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  checklistText: {
+    color: theme.colors.onSurface,
+    fontSize: 16,
+    marginLeft: 8,
+    flex: 1,
+  },
+  checklistTextChecked: {
+    textDecorationLine: 'line-through',
+    color: theme.colors.outline,
   },
   mainButton: {
     marginTop: 8,

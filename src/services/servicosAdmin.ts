@@ -101,3 +101,167 @@ export async function deleteServicoAdmin(id: string): Promise<boolean> {
   if (error) throw error;
   return Boolean(data);
 }
+
+export interface DashboardStats {
+  servicosHoje: number;
+  emAndamento: number;
+  concluidosHoje: number;
+  atividadeRecente: Servico[];
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+  const localDate = new Date();
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, '0');
+  const day = String(localDate.getDate()).padStart(2, '0');
+  const todayISO = `${year}-${month}-${day}`;
+
+  // 1. Servicos de hoje
+  const { count: hojeCount, error: hojeError } = await supabase
+    .from('servicos')
+    .select('id', { count: 'exact', head: true })
+    .eq('data_servico', todayISO);
+
+  if (hojeError) throw hojeError;
+
+  // 2. Em andamento
+  const { count: andamentoCount, error: andamentoError } = await supabase
+    .from('servicos')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'em_andamento');
+
+  if (andamentoError) throw andamentoError;
+
+  // 3. Concluidos hoje
+  const { count: concluidosCount, error: concluidosError } = await supabase
+    .from('servicos')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'concluido')
+    .eq('data_servico', todayISO);
+
+  if (concluidosError) throw concluidosError;
+
+  // 4. Atividade recente (ultimos 5 servicos criados ou modificados)
+  const { data: recenteData, error: recenteError } = await supabase
+    .from('servicos')
+    .select(`
+      *,
+      cliente:clientes(id, nome),
+      trabalhadora:trabalhadoras(id, nome)
+    `)
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  if (recenteError) throw recenteError;
+
+  return {
+    servicosHoje: hojeCount || 0,
+    emAndamento: andamentoCount || 0,
+    concluidosHoje: concluidosCount || 0,
+    atividadeRecente: (recenteData || []) as Servico[],
+  };
+}
+
+export interface RelatorioStats {
+  totalFaturado: number;
+  totalPago: number;
+  lucroLiquido: number;
+  margemPorcentagem: number;
+  totalServicos: number;
+  trabalhadoras: {
+    id: string;
+    nome: string;
+    servicosConcluidos: number;
+    totalRecebido: number;
+    margemGerada: number;
+  }[];
+  clientes: {
+    id: string;
+    nome: string;
+    servicosConcluidos: number;
+    totalFaturado: number;
+  }[];
+}
+
+export async function getRelatorios(dataInicio: string, dataFim: string): Promise<RelatorioStats> {
+  const { data, error } = await supabase
+    .from('servicos')
+    .select(`
+      *,
+      cliente:clientes(id, nome),
+      trabalhadora:trabalhadoras(id, nome)
+    `)
+    .gte('data_servico', dataInicio)
+    .lte('data_servico', dataFim);
+
+  if (error) throw error;
+
+  const servicos = (data || []) as Servico[];
+  const servicosConcluidos = servicos.filter((s) => s.status === 'concluido');
+
+  let totalFaturado = 0;
+  let totalPago = 0;
+
+  // Agrupadores
+  const trabalhadorasMap: Record<string, { nome: string; servicosConcluidos: number; totalRecebido: number; margemGerada: number }> = {};
+  const clientesMap: Record<string, { nome: string; servicosConcluidos: number; totalFaturado: number }> = {};
+
+  for (const s of servicosConcluidos) {
+    const valCliente = Number(s.valor_cliente) || 0;
+    const valTrab = Number(s.valor_trabalhadora) || 0;
+
+    totalFaturado += valCliente;
+    totalPago += valTrab;
+
+    // Trabalhadora
+    if (s.trabalhadora_id && s.trabalhadora) {
+      if (!trabalhadorasMap[s.trabalhadora_id]) {
+        trabalhadorasMap[s.trabalhadora_id] = {
+          nome: s.trabalhadora.nome,
+          servicosConcluidos: 0,
+          totalRecebido: 0,
+          margemGerada: 0,
+        };
+      }
+      trabalhadorasMap[s.trabalhadora_id].servicosConcluidos += 1;
+      trabalhadorasMap[s.trabalhadora_id].totalRecebido += valTrab;
+      trabalhadorasMap[s.trabalhadora_id].margemGerada += (valCliente - valTrab);
+    }
+
+    // Cliente
+    if (s.cliente_id && s.cliente) {
+      if (!clientesMap[s.cliente_id]) {
+        clientesMap[s.cliente_id] = {
+          nome: s.cliente.nome,
+          servicosConcluidos: 0,
+          totalFaturado: 0,
+        };
+      }
+      clientesMap[s.cliente_id].servicosConcluidos += 1;
+      clientesMap[s.cliente_id].totalFaturado += valCliente;
+    }
+  }
+
+  const lucroLiquido = totalFaturado - totalPago;
+  const margemPorcentagem = totalFaturado > 0 ? (lucroLiquido / totalFaturado) * 100 : 0;
+
+  const trabalhadorasArr = Object.entries(trabalhadorasMap).map(([id, item]) => ({
+    id,
+    ...item,
+  })).sort((a, b) => b.servicosConcluidos - a.servicosConcluidos);
+
+  const clientesArr = Object.entries(clientesMap).map(([id, item]) => ({
+    id,
+    ...item,
+  })).sort((a, b) => b.totalFaturado - a.totalFaturado);
+
+  return {
+    totalFaturado,
+    totalPago,
+    lucroLiquido,
+    margemPorcentagem,
+    totalServicos: servicosConcluidos.length,
+    trabalhadoras: trabalhadorasArr,
+    clientes: clientesArr,
+  };
+}

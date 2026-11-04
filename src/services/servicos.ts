@@ -52,3 +52,12 @@ export async function saveObservacoes(id: string, observacoes: string): Promise<
   if (error) throw error;
   return Boolean(data);
 }
+
+export async function saveChecklist(id: string, checklist: Record<string, boolean>): Promise<boolean> {
+  const { data, error } = await supabase.rpc('rpc_save_checklist', {
+    p_id: id,
+    p_checklist: checklist,
+  });
+  if (error) throw error;
+  return Boolean(data);
+}

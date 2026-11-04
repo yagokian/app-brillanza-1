@@ -1,14 +1,45 @@
-﻿import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, Button, Avatar, Surface } from 'react-native-paper';
+import { useState, useCallback } from 'react';
+import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { Text, Card, Button, Avatar, Surface, ActivityIndicator, List, Chip } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { theme } from '../../src/lib/theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { getDashboardStats, DashboardStats } from '../../src/services/servicosAdmin';
+import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default function AdminDashboard() {
   const { profile, signOut } = useAuth();
   const router = useRouter();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const data = await getDashboardStats();
+      setStats(data);
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchStats();
+    }, [fetchStats])
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchStats();
+  }, [fetchStats]);
 
   const quickActions = [
     {
@@ -37,9 +68,34 @@ export default function AdminDashboard() {
     },
   ];
 
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      agendado: 'Agendado',
+      em_andamento: 'Em Andamento',
+      concluido: 'Concluido',
+      cancelado: 'Cancelado',
+    };
+    return labels[status] || status;
+  };
+
+  const getStatusColor = (status: string) => {
+    const colors: Record<string, string> = {
+      agendado: '#7E57C2',
+      em_andamento: '#F9A825',
+      concluido: '#2E7D32',
+      cancelado: '#C62828',
+    };
+    return colors[status] || theme.colors.outline;
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Text variant="titleSmall" style={styles.pageTitle}>
           Inicio
         </Text>
@@ -58,56 +114,60 @@ export default function AdminDashboard() {
           </Button>
         </Surface>
 
-        {/* Stats Cards - Placeholder */}
-        <View style={styles.statsContainer}>
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statContent}>
-              <MaterialCommunityIcons
-                name="calendar-today"
-                size={24}
-                color={theme.colors.primary}
-              />
-              <Text variant="headlineMedium" style={styles.statNumber}>
-                0
-              </Text>
-              <Text variant="bodySmall" style={styles.statLabel}>
-                Servicos Hoje
-              </Text>
-            </View>
-          </Surface>
+        {/* Stats Cards */}
+        {loading && !refreshing ? (
+          <ActivityIndicator style={{ marginVertical: 24 }} color={theme.colors.primary} />
+        ) : (
+          <View style={styles.statsContainer}>
+            <Surface style={styles.statCard} elevation={1}>
+              <View style={styles.statContent}>
+                <MaterialCommunityIcons
+                  name="calendar-today"
+                  size={24}
+                  color={theme.colors.primary}
+                />
+                <Text variant="headlineMedium" style={styles.statNumber}>
+                  {stats?.servicosHoje ?? 0}
+                </Text>
+                <Text variant="bodySmall" style={styles.statLabel}>
+                  Servicos Hoje
+                </Text>
+              </View>
+            </Surface>
 
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statContent}>
-              <MaterialCommunityIcons
-                name="clock-outline"
-                size={24}
-                color="#F59E0B"
-              />
-              <Text variant="headlineMedium" style={styles.statNumber}>
-                0
-              </Text>
-              <Text variant="bodySmall" style={styles.statLabel}>
-                Em Andamento
-              </Text>
-            </View>
-          </Surface>
+            <Surface style={styles.statCard} elevation={1}>
+              <View style={styles.statContent}>
+                <MaterialCommunityIcons
+                  name="clock-outline"
+                  size={24}
+                  color="#F59E0B"
+                />
+                <Text variant="headlineMedium" style={styles.statNumber}>
+                  {stats?.emAndamento ?? 0}
+                </Text>
+                <Text variant="bodySmall" style={styles.statLabel}>
+                  Em Andamento
+                </Text>
+              </View>
+            </Surface>
 
-          <Surface style={styles.statCard} elevation={1}>
-            <View style={styles.statContent}>
-              <MaterialCommunityIcons
-                name="check-circle"
-                size={24}
-                color="#10B981"
-              />
-              <Text variant="headlineMedium" style={styles.statNumber}>
-                0
-              </Text>
-              <Text variant="bodySmall" style={styles.statLabel}>
-                Concluidos
-              </Text>
-            </View>
-          </Surface>
-        </View>
+            <Surface style={styles.statCard} elevation={1}>
+              <View style={styles.statContent}>
+                <MaterialCommunityIcons
+                  name="check-circle"
+                  size={24}
+                  color="#10B981"
+                />
+                <Text variant="headlineMedium" style={styles.statNumber}>
+                  {stats?.concluidosHoje ?? 0}
+                </Text>
+                <Text variant="bodySmall" style={styles.statLabel}>
+                  Concluidos Hoje
+                </Text>
+              </View>
+            </Surface>
+          </View>
+        )}
 
         {/* Quick Actions */}
         <Text variant="titleMedium" style={styles.sectionTitle}>
@@ -134,27 +194,63 @@ export default function AdminDashboard() {
           ))}
         </View>
 
-        {/* Recent Activity - Placeholder */}
+        {/* Recent Activity */}
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Atividade Recente
         </Text>
-        <Card style={styles.activityCard}>
-          <Card.Content>
-            <View style={styles.emptyState}>
-              <MaterialCommunityIcons
-                name="clipboard-text-outline"
-                size={48}
-                color={theme.colors.outline}
-              />
-              <Text variant="bodyMedium" style={styles.emptyText}>
-                Nenhuma atividade recente
-              </Text>
-              <Text variant="bodySmall" style={styles.emptySubtext}>
-                As atividades aparecerao aqui
-              </Text>
-            </View>
-          </Card.Content>
-        </Card>
+        {loading && !refreshing ? (
+          <ActivityIndicator style={{ marginVertical: 16 }} color={theme.colors.primary} />
+        ) : !stats?.atividadeRecente || stats.atividadeRecente.length === 0 ? (
+          <Card style={styles.activityCard}>
+            <Card.Content>
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons
+                  name="clipboard-text-outline"
+                  size={48}
+                  color={theme.colors.outline}
+                />
+                <Text variant="bodyMedium" style={styles.emptyText}>
+                  Nenhuma atividade recente
+                </Text>
+                <Text variant="bodySmall" style={styles.emptySubtext}>
+                  As atividades aparecerao aqui
+                </Text>
+              </View>
+            </Card.Content>
+          </Card>
+        ) : (
+          <Card style={styles.activityCardList}>
+            <Card.Content style={{ paddingHorizontal: 4, paddingVertical: 4 }}>
+              {stats.atividadeRecente.map((item, index) => (
+                <List.Item
+                  key={item.id}
+                  title={item.cliente?.nome || 'Servico sem Cliente'}
+                  description={`${format(parseISO(item.data_servico), "dd/MM/yyyy")} ${
+                    item.hora_inicio_prevista ? `• ${item.hora_inicio_prevista.substring(0, 5)}` : ''
+                  } ${item.trabalhadora?.nome ? `• ${item.trabalhadora.nome}` : ''}`}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      icon="calendar"
+                      color={getStatusColor(item.status)}
+                    />
+                  )}
+                  right={() => (
+                    <Chip
+                      mode="outlined"
+                      textStyle={{ color: getStatusColor(item.status), fontSize: 11 }}
+                      style={{ alignSelf: 'center', height: 26, marginRight: 8 }}
+                    >
+                      {getStatusLabel(item.status)}
+                    </Chip>
+                  )}
+                  style={index < stats.atividadeRecente.length - 1 ? styles.listItemBorder : undefined}
+                  onPress={() => router.push(`/(admin)/servicos/${item.id}`)}
+                />
+              ))}
+            </Card.Content>
+          </Card>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -240,6 +336,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     borderRadius: 14,
     marginBottom: 16,
+  },
+  activityCardList: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 14,
+    marginBottom: 16,
+  },
+  listItemBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
   },
   emptyState: {
     alignItems: 'center',

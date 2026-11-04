@@ -185,47 +185,19 @@ export default function NovaTrabalhadoraScreen() {
     try {
       const password = generatePassword();
 
-      // Salvar sessão atual do admin antes de criar novo usuário
-      const { data: currentSession } = await supabase.auth.getSession();
-      const adminSession = currentSession?.session;
-
-      // Usar signUp para criar o usuário (admin.createUser requer service_role key no backend)
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: watchedEmail,
-        password: password,
-        options: {
-          data: {
-            nome: watchedNome,
-            tipo: 'worker',
-            primeiro_acesso: true,
-          },
-        },
+      const { data, error } = await supabase.functions.invoke('create-worker', {
+        body: { email: watchedEmail, password, nome: watchedNome },
       });
 
-      if (signUpError) throw signUpError;
+      if (error) throw new Error(error.message || 'Erro ao criar acesso');
+      if (!data?.user_id) throw new Error('Não foi possível criar o acesso');
 
-      // Restaurar sessão do admin (signUp pode ter trocado a sessão)
-      if (adminSession) {
-        await supabase.auth.setSession({
-          access_token: adminSession.access_token,
-          refresh_token: adminSession.refresh_token,
-        });
-      }
-
-      if (signUpData.user) {
-        setValue('user_id', signUpData.user.id);
-        setGeneratedPassword(password);
-        Alert.alert(
-          'Acesso Criado!',
-          `Senha temporária: ${password}\n\nAnote esta senha para passar à trabalhadora. Ela deverá trocar no primeiro acesso.`
-        );
-      } else {
-        // Usuário pode já existir ou email precisa de confirmação
-        Alert.alert(
-          'Atenção',
-          'Não foi possível criar o acesso. Verifique se o email já está cadastrado.'
-        );
-      }
+      setValue('user_id', data.user_id);
+      setGeneratedPassword(password);
+      Alert.alert(
+        'Acesso Criado!',
+        `Senha temporária: ${password}\n\nAnote esta senha para passar à trabalhadora. Ela deverá trocar no primeiro acesso.`
+      );
     } catch (error: any) {
       console.error('Error creating user:', error);
       Alert.alert('Erro', error.message || 'Não foi possível criar o acesso.');

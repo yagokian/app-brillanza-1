@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(head -100)",
+      "Bash(dir c:\\\\projetos\\\\app-brillanza\\\\supabase)"
+    ]
+  }
+}
